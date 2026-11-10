@@ -1,9 +1,8 @@
 #include "SceneMain.h"
-#include "DxLib.h"
-#include "Mouse.h"
+#include "Fighter1.h"
 
-SceneMain::SceneMain() : 
-	m_frameCount(0)
+SceneMain::SceneMain()
+    : m_frameCount(0)
 {
 }
 
@@ -13,21 +12,37 @@ SceneMain::~SceneMain()
 
 void SceneMain::Init()
 {
-	m_frameCount = 0;
-}
+    m_frameCount = 0;
 
-void SceneMain::End()
-{
+    // プレイヤー生成
+    m_player1 = std::make_unique<Fighter1>();
+    m_player2 = std::make_unique<Fighter1>();
 }
 
 void SceneMain::Update()
 {
-	m_frameCount++;
+    m_frameCount++;
+
+    if (m_player1)
+    {
+        m_player1->Update();
+    }
+
+    if (m_player2)
+    {
+        m_player2->Update();
+    }
 }
 
 void SceneMain::Draw()
 {
-	DrawString(0, 0, "SceneMain", GetColor(255, 255, 2555));
-	DrawFormatString(0, 16, GetColor(255, 255, 255), "FRAME: %d", m_frameCount);
-	DrawFormatString(0, 32, GetColor(255, 255, 255), "MOUSE: (%5d, %5d)", Mouse::GetX(), Mouse::GetY());
+    if (m_player1)
+    {
+        m_player1->Draw();
+    }
+
+    if (m_player2)
+    {
+        m_player2->Draw();
+    }
 }
