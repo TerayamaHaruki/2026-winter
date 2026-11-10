@@ -1,0 +1,14 @@
+{
+    "version": 1,
+    "revision": 0,
+    "rules": [
+        {
+            "primary-output": "BONK!\\x64\\Debug\\SceneMain.obj",
+            "outputs": [
+                "BONK!\\x64\\Debug\\SceneMain.cpp.obj.dt.module.json",
+                "BONK!\\x64\\Debug\\SceneMain.cpp.obj.dt.d.json"
+            ],
+            "requires": []
+        }
+    ]
+}

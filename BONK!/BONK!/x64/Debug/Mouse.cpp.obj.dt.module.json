@@ -1,0 +1,14 @@
+{
+    "version": 1,
+    "revision": 0,
+    "rules": [
+        {
+            "primary-output": "BONK!\\x64\\Debug\\Mouse.obj",
+            "outputs": [
+                "BONK!\\x64\\Debug\\Mouse.cpp.obj.dt.module.json",
+                "BONK!\\x64\\Debug\\Mouse.cpp.obj.dt.d.json"
+            ],
+            "requires": []
+        }
+    ]
+}

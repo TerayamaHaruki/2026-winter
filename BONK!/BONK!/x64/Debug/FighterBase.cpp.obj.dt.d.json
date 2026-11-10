@@ -1,0 +1,12 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "c:\\users\\寺山陽貴\\desktop\\naitou\\bonk!\\fighterbase.cpp",
+        "ProvidedModule": "",
+        "Includes": [
+            "c:\\users\\寺山陽貴\\desktop\\naitou\\bonk!\\fighterbase.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}
