@@ -151,13 +151,21 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Fighter1.cpp" />
+    <ClCompile Include="FighterBase.cpp" />
+    <ClCompile Include="Input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mouse.cpp" />
+    <ClCompile Include="SceneController.cpp" />
     <ClCompile Include="SceneMain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Fighter1.h" />
+    <ClInclude Include="FighterBase.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Input.h" />
     <ClInclude Include="Mouse.h" />
+    <ClInclude Include="SceneController.h" />
     <ClInclude Include="SceneMain.h" />
     <ClInclude Include="Vec2.h" />
   </ItemGroup>
