@@ -1,0 +1,14 @@
+{
+    "version": 1,
+    "revision": 0,
+    "rules": [
+        {
+            "primary-output": "SideScrollShmup\\x64\\Debug\\Player.obj",
+            "outputs": [
+                "SideScrollShmup\\x64\\Debug\\Player.h.obj.dt.module.json",
+                "SideScrollShmup\\x64\\Debug\\Player.h.obj.dt.d.json"
+            ],
+            "requires": []
+        }
+    ]
+}
