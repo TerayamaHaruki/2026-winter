@@ -19,6 +19,12 @@ void SceneMain::Init()
     m_player2 = std::make_unique<Fighter1>();
 }
 
+void SceneMain::End()
+{
+	m_player1.reset();
+	m_player2.reset();
+}
+
 void SceneMain::Update()
 {
     m_frameCount++;

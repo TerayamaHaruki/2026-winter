@@ -158,6 +158,7 @@
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="SceneController.cpp" />
     <ClCompile Include="SceneMain.cpp" />
+    <ClCompile Include="Stage.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Fighter1.h" />
@@ -167,6 +168,7 @@
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="SceneController.h" />
     <ClInclude Include="SceneMain.h" />
+    <ClInclude Include="Stage.h" />
     <ClInclude Include="Vec2.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

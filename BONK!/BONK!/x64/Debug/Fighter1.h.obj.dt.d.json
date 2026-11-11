@@ -3,7 +3,9 @@
     "Data": {
         "Source": "c:\\users\\寺山陽貴\\documents\\github\\2026-winter\\bonk!\\fighter1.h",
         "ProvidedModule": "",
-        "Includes": [],
+        "Includes": [
+            "c:\\users\\寺山陽貴\\documents\\github\\2026-winter\\bonk!\\fighterbase.h"
+        ],
         "ImportedModules": [],
         "ImportedHeaderUnits": []
     }
