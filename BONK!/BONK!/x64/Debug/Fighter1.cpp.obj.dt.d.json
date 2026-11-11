@@ -5,10 +5,11 @@
         "ProvidedModule": "",
         "Includes": [
             "c:\\users\\寺山陽貴\\documents\\github\\2026-winter\\bonk!\\fighter1.h",
-            "c:\\dxlib_vc\\プロジェクトに追加すべきファイル_vc用\\dxlib.h",
-            "c:\\dxlib_vc\\プロジェクトに追加すべきファイル_vc用\\dxcompileconfig.h",
-            "c:\\dxlib_vc\\プロジェクトに追加すべきファイル_vc用\\dxdatatype.h",
-            "c:\\dxlib_vc\\プロジェクトに追加すべきファイル_vc用\\dxcompileconfig.h",
+            "c:\\users\\寺山陽貴\\documents\\github\\2026-winter\\bonk!\\fighterbase.h",
+            "c:\\users\\寺山陽貴\\desktop\\kawano\\dxlib_vc\\プロジェクトに追加すべきファイル_vc用\\dxlib.h",
+            "c:\\users\\寺山陽貴\\desktop\\kawano\\dxlib_vc\\プロジェクトに追加すべきファイル_vc用\\dxcompileconfig.h",
+            "c:\\users\\寺山陽貴\\desktop\\kawano\\dxlib_vc\\プロジェクトに追加すべきファイル_vc用\\dxdatatype.h",
+            "c:\\users\\寺山陽貴\\desktop\\kawano\\dxlib_vc\\プロジェクトに追加すべきファイル_vc用\\dxcompileconfig.h",
             "c:\\program files (x86)\\windows kits\\10\\include\\10.0.26100.0\\ucrt\\stdio.h",
             "c:\\program files (x86)\\windows kits\\10\\include\\10.0.26100.0\\ucrt\\corecrt.h",
             "c:\\program files\\microsoft visual studio\\18\\community\\vc\\tools\\msvc\\14.51.36231\\include\\vcruntime.h",
@@ -17,8 +18,8 @@
             "c:\\program files\\microsoft visual studio\\18\\community\\vc\\tools\\msvc\\14.51.36231\\include\\vadefs.h",
             "c:\\program files (x86)\\windows kits\\10\\include\\10.0.26100.0\\ucrt\\corecrt_wstdio.h",
             "c:\\program files (x86)\\windows kits\\10\\include\\10.0.26100.0\\ucrt\\corecrt_stdio_config.h",
-            "c:\\dxlib_vc\\プロジェクトに追加すべきファイル_vc用\\dxdatatypewin.h",
-            "c:\\dxlib_vc\\プロジェクトに追加すべきファイル_vc用\\dxcompileconfig.h",
+            "c:\\users\\寺山陽貴\\desktop\\kawano\\dxlib_vc\\プロジェクトに追加すべきファイル_vc用\\dxdatatypewin.h",
+            "c:\\users\\寺山陽貴\\desktop\\kawano\\dxlib_vc\\プロジェクトに追加すべきファイル_vc用\\dxcompileconfig.h",
             "c:\\program files (x86)\\windows kits\\10\\include\\10.0.26100.0\\um\\windows.h",
             "c:\\program files (x86)\\windows kits\\10\\include\\10.0.26100.0\\shared\\winapifamily.h",
             "c:\\program files (x86)\\windows kits\\10\\include\\10.0.26100.0\\shared\\winpackagefamily.h",
@@ -260,7 +261,7 @@
             "c:\\program files (x86)\\windows kits\\10\\include\\10.0.26100.0\\shared\\pshpack1.h",
             "c:\\program files (x86)\\windows kits\\10\\include\\10.0.26100.0\\shared\\poppack.h",
             "c:\\program files (x86)\\windows kits\\10\\include\\10.0.26100.0\\um\\dpa_dsa.h",
-            "c:\\dxlib_vc\\プロジェクトに追加すべきファイル_vc用\\dxfunctionwin.h"
+            "c:\\users\\寺山陽貴\\desktop\\kawano\\dxlib_vc\\プロジェクトに追加すべきファイル_vc用\\dxfunctionwin.h"
         ],
         "ImportedModules": [],
         "ImportedHeaderUnits": []
