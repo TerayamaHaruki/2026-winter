@@ -3,5 +3,5 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="BONK!.vcxproj" />
+  <Project Path="BONK!.vcxproj" Id="10169ac4-5dc3-4385-b9ac-90efe1d04ec0" />
 </Solution>
