@@ -59,14 +59,6 @@ protected:
 	int m_jumpDir;
 	// 空中にいるかどうか
 	bool m_air;
-	// 攻撃中かどうか
-	bool m_isAttacking;
-	// 攻撃中のフレーム数
-	int m_attackFrame;
-	// 攻撃がヒットしたかどうか
-	bool m_isHit;
-	// 前のフレームにJキーが押されていたか
-	bool m_prevAttackKey;
 	// ガード中かどうか
 	bool m_isGuarding;
 	// 右向きかどうか
