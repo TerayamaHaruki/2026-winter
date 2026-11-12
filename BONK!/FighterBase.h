@@ -17,6 +17,8 @@ protected:
 	float m_y;
 	// 重力
 	float m_gravity;
+	// 縦方向の速度(上向きがマイナス)
+	float m_vy;
 	// サイズ
 	float m_width;
 	float m_height;
