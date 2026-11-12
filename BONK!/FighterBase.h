@@ -10,7 +10,7 @@ public:
 	virtual void Update() = 0;
 	virtual void Draw() = 0;
 
-	// ---------- GameSceneから使う関数 ----------
+	// GameSceneから使う関数
 	// 操作するキーを決める(右・左・上・攻撃)
 	void SetKeys(int right, int left, int up, int attack);
 	// 開始位置と向きを決める
@@ -72,7 +72,7 @@ protected:
 	int m_keyUp;
 	int m_keyAttack;
 
-	// ---------- 攻撃 ----------
+	// 攻撃
 	bool m_isAttacking;     // 攻撃中かどうか
 	int  m_attackFrame;     // 攻撃を始めて何フレーム目か
 	bool m_attackHit;       // この攻撃がもう当たったか
