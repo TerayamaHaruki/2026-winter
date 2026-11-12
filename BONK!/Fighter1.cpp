@@ -31,11 +31,11 @@ void Fighter1::Init()
 
 	// 弱攻撃のデータ
 	m_attackActiveStart = 5; // 5フレーム目から判定が出る
-	m_attackActiveEnd = 8;   // 8フレーム目の手前まで(3フレーム)
-	m_attackTotal = 20;      // 20フレームで終わる
-	m_attackDamage = 5;      // ダメージ
-	m_attackW = 40.0f;       // 判定の幅
-	m_attackH = 30.0f;       // 判定の高さ
+	m_attackActiveEnd = 8;  // 8フレーム目の手前まで(3フレーム)
+	m_attackTotal = 20;   // 20フレームで終わる
+	m_attackDamage = 5;   // ダメージ
+	m_attackW = 40.0f;    // 判定の幅
+	m_attackH = 30.0f;    // 判定の高さ
 	m_attackOffsetY = 20.0f; // 体の上から20px下
 }
 
@@ -45,7 +45,7 @@ void Fighter1::End()
 
 void Fighter1::Update()
 {
-	// ---------- 前と後ろのキーを決める(向いている方向が「前」) ----------
+	// 前と後ろのキーを決める(向いている方向が「前」) 
 	int forwardKey;
 	int backKey;
 	float dir; // 右向きなら1、左向きなら-1
@@ -62,7 +62,7 @@ void Fighter1::Update()
 		dir = -1.0f;
 	}
 
-	// ---------- 攻撃のフレームを進める ----------
+	// 攻撃のフレームを進める 
 	if (m_isAttacking == true)
 	{
 		m_attackFrame++;
@@ -72,7 +72,7 @@ void Fighter1::Update()
 		}
 	}
 
-	// ---------- 攻撃を始める(攻撃キーを押した瞬間) ----------
+	// 攻撃を始める(攻撃キーを押した瞬間) 
 	int nowAttackKey = CheckHitKey(m_keyAttack);
 	if (nowAttackKey == 1 && m_prevAttackKey == 0 && m_isAttacking == false && m_air == false)
 	{
@@ -82,7 +82,7 @@ void Fighter1::Update()
 	}
 	m_prevAttackKey = nowAttackKey;
 
-	// ---------- 地上にいるときの移動(攻撃中は動けない) ----------
+	// 地上にいるときの移動(攻撃中は動けない) 
 	if (m_air == false && m_isAttacking == false)
 	{
 		if (CheckHitKey(forwardKey))
@@ -95,7 +95,7 @@ void Fighter1::Update()
 		}
 	}
 
-	// ---------- ジャンプ(上キーを押した瞬間) ----------
+	// ジャンプ(上キーを押した瞬間) 
 	if (CheckHitKey(m_keyUp) && m_air == false && m_isAttacking == false)
 	{
 		m_air = true;
@@ -118,7 +118,7 @@ void Fighter1::Update()
 		}
 	}
 
-	// ---------- 空中にいるとき ----------
+	// 空中にいるとき 
 	if (m_air == true)
 	{
 		// 横に進む(ジャンプした方向のまま)
@@ -145,7 +145,7 @@ void Fighter1::Update()
 		}
 	}
 
-	// ---------- 画面の外に出ないようにする ----------
+	// 画面の外に出ないようにする 
 	if (m_x < 0.0f)
 	{
 		m_x = 0.0f;
