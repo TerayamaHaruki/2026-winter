@@ -110,14 +110,31 @@ void Fighter1::Update()
 		m_x = Game::kScreenWidth - m_width;
 	}
 
+	// Jキーが押されたか確認
 	bool nowKey = CheckHitKey(KEY_INPUT_J) != 0;
-	if (nowKey && !m_prevAttackKey == false && m_isAttacking == false && m_air == false)
+
+	// Jキーを押した瞬間に攻撃開始
+	if (nowKey && !m_prevAttackKey &&
+		m_isAttacking == false && m_air == false)
 	{
 		m_isAttacking = true;
 		m_attackFrame = 0;
-		m_attackFrame = false;
 	}
+
+	// 現在のキー状態を保存
 	m_prevAttackKey = nowKey;
+
+	// 攻撃中の処理
+	if (m_isAttacking == true)
+	{
+		m_attackFrame++;
+
+		// 20フレーム経過したら攻撃終了
+		if (m_attackFrame >= 20)
+		{
+			m_isAttacking = false;
+		}
+	}
 }
 
 void Fighter1::Draw()
