@@ -35,53 +35,81 @@ void Fighter1::End()
 
 void Fighter1::Update()
 {
-	const bool pushRight = CheckHitKey(KEY_INPUT_D) != 0;
-	const bool pushLeft = CheckHitKey(KEY_INPUT_A) != 0;
-
-	// 移動処理(地上のみ。空中では向きも変えられない)
-	if (!m_air)
+	// ---------- 地上にいるときの移動 ----------
+	if (m_air == false)
 	{
-		if (pushRight)
+		if (CheckHitKey(KEY_INPUT_D))
 		{
 			m_x += m_ForwardSpeed;
 			m_isFacingRight = true;
 		}
-		else if (pushLeft)
+		else if (CheckHitKey(KEY_INPUT_A))
 		{
 			m_x -= m_BackSpeed;
 			m_isFacingRight = false;
 		}
 	}
-	// ジャンプ処理(跳んだ瞬間の入力で 前・垂直・後ろ が決まる)
-	if (CheckHitKey(KEY_INPUT_W) && !m_air)
+
+	// ---------- ジャンプ(上キーを押した瞬間) ----------
+	if (CheckHitKey(KEY_INPUT_W) && m_air == false)
 	{
 		m_air = true;
-		m_vy = m_Jump; // 上向きの初速を与える
-		if (pushRight)     m_jumpDir = 1;   // 前ジャンプ
-		else if (pushLeft) m_jumpDir = -1;  // 後ろジャンプ
-		else               m_jumpDir = 0;   // 垂直ジャンプ
-	}
-	// 空中処理
-	if (m_air)
-	{
-		// 空中では跳んだ方向に一定速度で進む
-		if (m_jumpDir > 0)      m_x += m_ForwardSpeed;
-		else if (m_jumpDir < 0) m_x -= m_BackSpeed;
-		m_vy += m_gravity; // 毎フレーム速度に重力を足す
-		m_y += m_vy;       // 速度の分だけ移動
-		if (m_y + m_height >= kGroundY) // 地面に着地した場合
+		m_vy = m_Jump;
+
+		if (CheckHitKey(KEY_INPUT_D))
 		{
-			m_y = kGroundY - m_height; // 足元を床に合わせる
+			// 上 + 前 = 前ジャンプ
+			m_jumpDir = 1;
+		}
+		else if (CheckHitKey(KEY_INPUT_A))
+		{
+			// 上 + 後ろ = 後ろジャンプ
+			m_jumpDir = -1;
+		}
+		else
+		{
+			// 上だけ = 垂直ジャンプ
+			m_jumpDir = 0;
+		}
+	}
+
+	// ---------- 空中にいるとき ----------
+	if (m_air == true)
+	{
+		// 横に進む(ジャンプした方向のまま)
+		if (m_jumpDir == 1)
+		{
+			m_x += m_ForwardSpeed;
+		}
+		else if (m_jumpDir == -1)
+		{
+			m_x -= m_BackSpeed;
+		}
+
+		// 縦に進む(重力で少しずつ下向きの速度になる)
+		m_vy += m_gravity;
+		m_y += m_vy;
+
+		// 床に着いたら着地
+		if (m_y + m_height >= kGroundY)
+		{
+			m_y = kGroundY - m_height;
 			m_vy = 0.0f;
 			m_air = false;
 			m_jumpDir = 0;
 		}
 	}
 
-	// 画面の外に出ないようにする
-	if (m_x < 0.0f) m_x = 0.0f;
-	if (m_x + m_width > Game::kScreenWidth) m_x = Game::kScreenWidth - m_width;
-}	
+	// ---------- 画面の外に出ないようにする ----------
+	if (m_x < 0.0f)
+	{
+		m_x = 0.0f;
+	}
+	if (m_x + m_width > Game::kScreenWidth)
+	{
+		m_x = Game::kScreenWidth - m_width;
+	}
+}
 
 void Fighter1::Draw()
 {
