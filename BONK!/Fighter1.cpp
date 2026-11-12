@@ -109,6 +109,15 @@ void Fighter1::Update()
 	{
 		m_x = Game::kScreenWidth - m_width;
 	}
+
+	bool nowKey = CheckHitKey(KEY_INPUT_J) != 0;
+	if (nowKey && !m_prevAttackKey == false && m_isAttacking == false && m_air == false)
+	{
+		m_isAttacking = true;
+		m_attackFrame = 0;
+		m_attackFrame = false;
+	}
+	m_prevAttackKey = nowKey;
 }
 
 void Fighter1::Draw()
