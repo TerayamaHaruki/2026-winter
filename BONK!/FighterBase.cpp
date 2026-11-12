@@ -5,6 +5,7 @@ FighterBase::FighterBase():
 	m_x(0.0f),
 	m_y(0.0f),
 	m_gravity(0.5f),
+	m_vy(0.0f),
 	m_width(0.0f),
 	m_height(0.0f),
 	m_ForwardSpeed(5.0f),
