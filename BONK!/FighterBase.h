@@ -27,6 +27,8 @@ protected:
 	float m_BackSpeed;
 	// ジャンプ力
 	float m_Jump;
+	// ジャンプ中の横方向(1:前 0:垂直 -1:後ろ)
+	int m_jumpDir;
 	// 空中にいるかどうか
 	bool m_air;
 	// ガード中かどうか
