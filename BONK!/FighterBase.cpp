@@ -11,6 +11,7 @@ FighterBase::FighterBase():
 	m_ForwardSpeed(5.0f),
 	m_BackSpeed(3.0f),
 	m_Jump(-60.0f),
+	m_jumpDir(0),
 	m_air(false),
 	m_isGuarding(false),
 	m_isFacingRight(true)
