@@ -157,7 +157,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="SceneController.cpp" />
-    <ClCompile Include="SceneMain.cpp" />
+    <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="Stage.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -167,7 +167,7 @@
     <ClInclude Include="Input.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="SceneController.h" />
-    <ClInclude Include="SceneMain.h" />
+    <ClInclude Include="GameScene.h" />
     <ClInclude Include="Stage.h" />
     <ClInclude Include="Vec2.h" />
   </ItemGroup>

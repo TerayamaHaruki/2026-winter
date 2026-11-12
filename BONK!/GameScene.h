@@ -1,14 +1,16 @@
 #pragma once
-
 #include <memory>
+#include "Stage.h"
 
 class FighterBase;
+class Stage;
 
-class SceneMain
+
+class GameScene
 {
 public:
-    SceneMain();
-    ~SceneMain();
+    GameScene();
+    ~GameScene();
 
     void Init();
     void End();
@@ -22,4 +24,6 @@ private:
     // プレイヤー管理
     std::unique_ptr<FighterBase> m_player1;
     std::unique_ptr<FighterBase> m_player2;
+	// ステージ管理
+    Stage m_stage;
 };

@@ -11,6 +11,8 @@ public:
     void Update();
     void Draw();
 
+    int m_groundY = 500; // 床の高さ
+
 private:
-    int m_groundY; // 床の高さ
+    
 };

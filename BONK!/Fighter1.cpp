@@ -12,7 +12,7 @@ Fighter1::~Fighter1()
 void Fighter1::Init()
 {
 	m_x = 100.0f; // 初期位置X
-	m_y = 0.0f;   // 初期位置Y
+	m_y = 400.0f;   // 初期位置Y
 	m_width = 50.0f; // 幅
 	m_height = 100.0f; // 高さ
 	m_ForwardSpeed = 5.0f; // 前進速度
@@ -49,9 +49,9 @@ void Fighter1::Update()
 	if (m_air)
 	{
 		m_y += 0.5f; // 重力加速度
-		if (m_y >= 0.0f) // 地面に着地した場合
+		if (m_y + m_height >= 510.0f) // 地面に着地した場合
 		{
-			m_y = 0.0f;
+			m_y = 500 - m_height; // 床の高さ
 			m_air = false;
 		}
 	}

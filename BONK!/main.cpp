@@ -3,7 +3,7 @@
 #include <memory>
 
 #include "Mouse.h"
-#include "SceneMain.h"
+#include "GameScene.h"
 
 // プログラムは WinMain から始まります
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow)
@@ -27,7 +27,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	// ゲームシーンの作成
 
 	// メモリ確保
-	std::shared_ptr<SceneMain> pScene = std::make_shared<SceneMain>();
+	std::shared_ptr<GameScene> pScene = std::make_shared<GameScene>();
 	pScene->Init();
 
 	while (ProcessMessage() == 0)
