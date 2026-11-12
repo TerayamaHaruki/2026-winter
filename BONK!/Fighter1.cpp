@@ -35,7 +35,7 @@ void Fighter1::End()
 
 void Fighter1::Update()
 {
-	// ---------- 地上にいるときの移動 ----------
+	// 地上にいるときの移動
 	if (m_air == false)
 	{
 		if (CheckHitKey(KEY_INPUT_D))
@@ -50,7 +50,7 @@ void Fighter1::Update()
 		}
 	}
 
-	// ---------- ジャンプ(上キーを押した瞬間) ----------
+	// ジャンプ(上キーを押した瞬間)
 	if (CheckHitKey(KEY_INPUT_W) && m_air == false)
 	{
 		m_air = true;
@@ -73,7 +73,7 @@ void Fighter1::Update()
 		}
 	}
 
-	// ---------- 空中にいるとき ----------
+	// 空中にいるとき
 	if (m_air == true)
 	{
 		// 横に進む(ジャンプした方向のまま)
@@ -100,7 +100,7 @@ void Fighter1::Update()
 		}
 	}
 
-	// ---------- 画面の外に出ないようにする ----------
+	// 画面の外に出ないようにする
 	if (m_x < 0.0f)
 	{
 		m_x = 0.0f;
