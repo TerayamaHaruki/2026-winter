@@ -1,22 +1,23 @@
 #pragma once
 #include <memory>
 #include "Stage.h"
+#include "Scene.h"
 
 class FighterBase;
 class Stage;
 
 
-class GameScene
+class GameScene : public Scene
 {
 public:
-    GameScene();
+    GameScene(SceneController& controller);
     ~GameScene();
 
     void Init();
     void End();
 
-    void Update();
-    void Draw();
+    virtual void Update(Input& input) override;
+    virtual void Draw() override;
 
 private:
     int m_frameCount;

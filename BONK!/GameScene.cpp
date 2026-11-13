@@ -1,6 +1,10 @@
 #include "GameScene.h"
 #include "Fighter1.h"
 #include "DxLib.h"
+#include "SceneController.h"
+#include "PauseScene.h"
+#include "Input.h"
+#include <memory>
 
 namespace
 {
@@ -25,13 +29,17 @@ namespace
 	}
 }
 
-GameScene::GameScene()
-    : m_frameCount(0)
+GameScene::GameScene(SceneController& controller)
+    : Scene(controller)
+    , m_frameCount(0)
 {
+    // シーンが作られたときに、プレイヤーなどを準備する
+    Init();
 }
 
 GameScene::~GameScene()
 {
+    End();
 }
 
 void GameScene::Init()
@@ -62,8 +70,15 @@ void GameScene::End()
 	m_player2.reset();
 }
 
-void GameScene::Update()
+void GameScene::Update(Input& input)
 {
+    // Pキーでポーズ画面を、ゲームの上に重ねる
+    if (input.IsTriggered("pause"))
+    {
+        m_controller.PushScene(std::make_shared<PauseScene>(m_controller));
+        return;
+    }
+
     m_frameCount++;
 
     if (m_player1 && m_player2)
