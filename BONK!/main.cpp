@@ -3,7 +3,9 @@
 #include <memory>
 
 #include "Mouse.h"
-#include "GameScene.h"
+#include "Input.h"
+#include "SceneController.h"
+#include "TitleScene.h"
 
 // プログラムは WinMain から始まります
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow)
@@ -15,7 +17,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	SetGraphMode( Game::kScreenWidth, Game::kScreenHeight, Game::kColorDepth);
 
 	// ウィンドウのタイトル表示を変更
-	SetMainWindowText("DxLibTemplate");
+	SetMainWindowText("BONK!");
 
 	if (DxLib_Init() == -1)		// ＤＸライブラリ初期化処理
 	{
@@ -24,16 +26,20 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 	SetDrawScreen(DX_SCREEN_BACK);
 
-	// ゲームシーンの作成
+	// 入力とシーン管理を用意する
+	Input input;
+	SceneController controller;
 
-	// メモリ確保
-	std::shared_ptr<GameScene> pScene = std::make_shared<GameScene>();
-	pScene->Init();
+	// 最初のシーンはタイトル画面
+	controller.ChangeScene(std::make_shared<TitleScene>(controller));
 
 	while (ProcessMessage() == 0)
 	{
 		// 現在のフレーム開始時刻を取得
 		LONGLONG start = GetNowHiPerformanceCount();
+
+		// 入力を更新(毎フレームの最初に1回)
+		input.Update();
 
 		// 画面をクリア
 		ClearDrawScreen();
@@ -41,9 +47,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 		// ゲームを処理
 		Mouse::Update();
-		pScene->Update();
-
-		pScene->Draw();
+		controller.Update(input); // いまのシーンを更新
+		controller.Draw();        // シーンを描画
 
 		// 画面の書き換えを待つ
 		ScreenFlip();
@@ -57,8 +62,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			// 時間経過まで何もせずに待つ
 		}
 	}
-
-	pScene->End();
 
 	DxLib_End();				// ＤＸライブラリ使用の終了処理
 
