@@ -98,7 +98,7 @@ void Fighter1::Update()
 		m_attackActiveStart = 12; // 12フレーム目から判定が出る(遅い)
 		m_attackActiveEnd = 16;   // 16フレーム目の手前まで(4フレーム)
 		m_attackTotal = 40;       // 40フレームで終わる(硬直が長い)
-		m_attackDamage = 15;      // ダメージ
+		m_attackDamage = 10;      // ダメージ
 		m_attackW = 60.0f;        // 判定の幅(長い)
 		m_attackH = 40.0f;        // 判定の高さ
 		m_attackOffsetY = 15.0f;  // 体の上から15px下
