@@ -11,8 +11,8 @@ public:
 	virtual void Draw() = 0;
 
 	// GameSceneから使う関数
-	// 操作するキーを決める(右・左・上・攻撃)
-	void SetKeys(int right, int left, int up, int attack);
+	// 操作するキーを決める(右・左・上・弱攻撃・強攻撃)
+	void SetKeys(int right, int left, int up, int attack, int strongAttack);
 	// 開始位置と向きを決める
 	void SetPosition(float x, bool isFacingRight);
 	// 体の色を決める
@@ -70,13 +70,16 @@ protected:
 	int m_keyRight;
 	int m_keyLeft;
 	int m_keyUp;
-	int m_keyAttack;
+	int m_keyAttack;       // 弱攻撃のキー
+	int m_keyStrong;       // 強攻撃のキー
 
 	// 攻撃
 	bool m_isAttacking;     // 攻撃中かどうか
 	int  m_attackFrame;     // 攻撃を始めて何フレーム目か
 	bool m_attackHit;       // この攻撃がもう当たったか
-	int  m_prevAttackKey;   // 前のフレームに攻撃キーが押されていたか
+	int  m_prevAttackKey;   // 前のフレームに弱攻撃キーが押されていたか
+	int  m_prevStrongKey;   // 前のフレームに強攻撃キーが押されていたか
+	bool m_isStrongAttack;  // 今の攻撃が強攻撃かどうか
 	int  m_attackActiveStart; // 判定が出始めるフレーム(発生)
 	int  m_attackActiveEnd;   // 判定が消えるフレーム(この手前まで当たる)
 	int  m_attackTotal;       // 攻撃が終わるまでのフレーム数(硬直を含む)

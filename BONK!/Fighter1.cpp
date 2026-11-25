@@ -29,14 +29,7 @@ void Fighter1::Init()
 	m_isFacingRight = true; // 向きフラグ
 	m_color = GetColor(255, 0, 0); // 体の色(赤)
 
-	// 弱攻撃のデータ
-	m_attackActiveStart = 5; // 5フレーム目から判定が出る
-	m_attackActiveEnd = 8;  // 8フレーム目の手前まで(3フレーム)
-	m_attackTotal = 20;   // 20フレームで終わる
-	m_attackDamage = 5;   // ダメージ
-	m_attackW = 40.0f;    // 判定の幅
-	m_attackH = 30.0f;    // 判定の高さ
-	m_attackOffsetY = 20.0f; // 体の上から20px下
+	// 弱攻撃・強攻撃のデータは、攻撃を始めるとき(Update)に入れる
 }
 
 void Fighter1::End()
@@ -72,15 +65,46 @@ void Fighter1::Update()
 		}
 	}
 
-	// 攻撃を始める(攻撃キーを押した瞬間) 
+	// 攻撃を始める(キーを押した瞬間)
 	int nowAttackKey = CheckHitKey(m_keyAttack);
+	int nowStrongKey = CheckHitKey(m_keyStrong);
+
+	// 弱攻撃
 	if (nowAttackKey == 1 && m_prevAttackKey == 0 && m_isAttacking == false && m_air == false)
 	{
 		m_isAttacking = true;
+		m_isStrongAttack = false;
 		m_attackFrame = 0;
 		m_attackHit = false;
+
+		// 弱攻撃のデータ
+		m_attackActiveStart = 5;  // 5フレーム目から判定が出る
+		m_attackActiveEnd = 8;    // 8フレーム目の手前まで(3フレーム)
+		m_attackTotal = 20;       // 20フレームで終わる
+		m_attackDamage = 5;       // ダメージ
+		m_attackW = 40.0f;        // 判定の幅
+		m_attackH = 30.0f;        // 判定の高さ
+		m_attackOffsetY = 20.0f;  // 体の上から20px下
+	}
+	// 強攻撃(弱攻撃より、遅い・長い・痛い)
+	else if (nowStrongKey == 1 && m_prevStrongKey == 0 && m_isAttacking == false && m_air == false)
+	{
+		m_isAttacking = true;
+		m_isStrongAttack = true;
+		m_attackFrame = 0;
+		m_attackHit = false;
+
+		// 強攻撃のデータ
+		m_attackActiveStart = 12; // 12フレーム目から判定が出る(遅い)
+		m_attackActiveEnd = 16;   // 16フレーム目の手前まで(4フレーム)
+		m_attackTotal = 40;       // 40フレームで終わる(硬直が長い)
+		m_attackDamage = 15;      // ダメージ
+		m_attackW = 60.0f;        // 判定の幅(長い)
+		m_attackH = 40.0f;        // 判定の高さ
+		m_attackOffsetY = 15.0f;  // 体の上から15px下
 	}
 	m_prevAttackKey = nowAttackKey;
+	m_prevStrongKey = nowStrongKey;
 
 	// 地上にいるときの移動(攻撃中は動けない) 
 	if (m_air == false && m_isAttacking == false)
@@ -176,12 +200,19 @@ void Fighter1::Draw()
 		float right;
 		float bottom;
 		CalcAttackBox(left, top, right, bottom);
+
+		// 弱攻撃は黄色、強攻撃はオレンジ
+		int boxColor = GetColor(255, 255, 0);
+		if (m_isStrongAttack == true)
+		{
+			boxColor = GetColor(255, 140, 0);
+		}
 		DrawBox(
 			static_cast<int>(left),
 			static_cast<int>(top),
 			static_cast<int>(right),
 			static_cast<int>(bottom),
-			GetColor(255, 255, 0),
+			boxColor,
 			FALSE
 		);
 	}

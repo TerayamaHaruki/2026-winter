@@ -54,13 +54,13 @@ void GameScene::Init()
 	m_player1->Init();
 	m_player2->Init();
 
-	// 1P: 左側に立つ。A/D 移動、W ジャンプ、J 攻撃
+	// 1P: 左側に立つ。A/D 移動、W ジャンプ、J 弱攻撃、K 強攻撃
 	m_player1->SetPosition(200.0f, true);
-	m_player1->SetKeys(KEY_INPUT_D, KEY_INPUT_A, KEY_INPUT_W, KEY_INPUT_J);
+	m_player1->SetKeys(KEY_INPUT_D, KEY_INPUT_A, KEY_INPUT_W, KEY_INPUT_J, KEY_INPUT_K);
 
-	// 2P: 右側に立つ。←/→ 移動、↑ ジャンプ、, 攻撃
+	// 2P: 右側に立つ。←/→ 移動、↑ ジャンプ、, 弱攻撃、. 強攻撃
 	m_player2->SetPosition(1000.0f, false);
-	m_player2->SetKeys(KEY_INPUT_RIGHT, KEY_INPUT_LEFT, KEY_INPUT_UP, KEY_INPUT_COMMA);
+	m_player2->SetKeys(KEY_INPUT_RIGHT, KEY_INPUT_LEFT, KEY_INPUT_UP, KEY_INPUT_COMMA, KEY_INPUT_PERIOD);
 	m_player2->SetColor(GetColor(0, 128, 255));
 }
 
