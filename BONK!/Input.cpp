@@ -3,13 +3,73 @@
 
 Input::Input()
 {
-	// 名前とキーの対応表。ここを変えれば、キー配置を変えられる
-	m_table["ok"] = { KEY_INPUT_RETURN, KEY_INPUT_NUMPADENTER };
-	m_table["pause"] = { KEY_INPUT_P };
-	m_table["up"] = { KEY_INPUT_UP, KEY_INPUT_W };
-	m_table["down"] = { KEY_INPUT_DOWN, KEY_INPUT_S };
+	// ---- タイトル・ポーズなどの操作 ----
+	m_table["ok"] = {
+		{ PeripheralType::keybd, KEY_INPUT_RETURN },
+		{ PeripheralType::keybd, KEY_INPUT_NUMPADENTER },
+		{ PeripheralType::pad,   PAD_INPUT_A },
+	};
+	m_table["pause"] = {
+		{ PeripheralType::keybd, KEY_INPUT_P },
+	};
+	m_table["up"] = {
+		{ PeripheralType::keybd, KEY_INPUT_UP },
+		{ PeripheralType::keybd, KEY_INPUT_W },
+		{ PeripheralType::pad,   PAD_INPUT_UP },
+	};
+	m_table["down"] = {
+		{ PeripheralType::keybd, KEY_INPUT_DOWN },
+		{ PeripheralType::keybd, KEY_INPUT_S },
+		{ PeripheralType::pad,   PAD_INPUT_DOWN },
+	};
 
-	// 最初は全部「押していない」にしておく
+	// ---- 1P(キーボードは D/A/W/J/K、パッドは1つ目) ----
+	m_table["p1_right"] = {
+		{ PeripheralType::keybd, KEY_INPUT_D },
+		{ PeripheralType::pad,   PAD_INPUT_RIGHT },
+	};
+	m_table["p1_left"] = {
+		{ PeripheralType::keybd, KEY_INPUT_A },
+		{ PeripheralType::pad,   PAD_INPUT_LEFT },
+	};
+	m_table["p1_up"] = {
+		{ PeripheralType::keybd, KEY_INPUT_W },     // スペースにするならここを KEY_INPUT_SPACE に
+		{ PeripheralType::pad,   PAD_INPUT_UP },
+		{ PeripheralType::pad,   PAD_INPUT_A },
+	};
+	m_table["p1_weak"] = {
+		{ PeripheralType::keybd, KEY_INPUT_J },
+		{ PeripheralType::pad,   PAD_INPUT_C },     // Xボタン
+	};
+	m_table["p1_strong"] = {
+		{ PeripheralType::keybd, KEY_INPUT_K },
+		{ PeripheralType::pad,   PAD_INPUT_X },     // Yボタン
+	};
+
+	// ---- 2P(キーボードは矢印キー/カンマ/ピリオド、パッドは2つ目) ----
+	m_table["p2_right"] = {
+		{ PeripheralType::keybd, KEY_INPUT_RIGHT },
+		{ PeripheralType::pad2,  PAD_INPUT_RIGHT },
+	};
+	m_table["p2_left"] = {
+		{ PeripheralType::keybd, KEY_INPUT_LEFT },
+		{ PeripheralType::pad2,  PAD_INPUT_LEFT },
+	};
+	m_table["p2_up"] = {
+		{ PeripheralType::keybd, KEY_INPUT_UP },
+		{ PeripheralType::pad2,  PAD_INPUT_UP },
+		{ PeripheralType::pad2,  PAD_INPUT_A },
+	};
+	m_table["p2_weak"] = {
+		{ PeripheralType::keybd, KEY_INPUT_COMMA },
+		{ PeripheralType::pad2,  PAD_INPUT_C },
+	};
+	m_table["p2_strong"] = {
+		{ PeripheralType::keybd, KEY_INPUT_PERIOD },
+		{ PeripheralType::pad2,  PAD_INPUT_X },
+	};
+
+	// 最初は全部「押していない」にしておく(ここは変更なし)
 	for (const auto& row : m_table)
 	{
 		m_current[row.first] = false;
@@ -17,19 +77,55 @@ Input::Input()
 	}
 }
 
+
 void Input::Update()
 {
-	// 前のフレームの状態を保存してから、今の状態を調べる
+	// 前のフレームの状態を保存する(ここは変更なし)
 	m_last = m_current;
+
+	// パッドの状態を、最初に1回だけ読む
+	int padState = 0;   // 1つ目のパッド
+	int pad2State = 0;  // 2つ目のパッド
+	int padNum = GetJoypadNum();  // つながっているパッドの数
+	if (padNum > 0)
+	{
+		padState = GetJoypadInputState(DX_INPUT_PAD1);
+	}
+	if (padNum > 1)
+	{
+		pad2State = GetJoypadInputState(DX_INPUT_PAD2);
+	}
 
 	for (const auto& row : m_table)
 	{
 		bool pushed = false;
-		for (int key : row.second)
+
+		// ★ 登録されている入力を1つずつ調べる(型が InputInfo になった)
+		for (const InputInfo& info : row.second)
 		{
-			if (CheckHitKey(key) == 1)
+			// ★ 機器の種類によって、調べ方を変える
+			switch (info.type)
 			{
-				pushed = true;
+			case PeripheralType::keybd:
+				if (CheckHitKey(info.id) == 1)
+				{
+					pushed = true;
+				}
+				break;
+
+			case PeripheralType::pad:
+				if ((padState & info.id) != 0)
+				{
+					pushed = true;
+				}
+				break;
+
+			case PeripheralType::pad2:
+				if ((pad2State & info.id) != 0)
+				{
+					pushed = true;
+				}
+				break;
 			}
 		}
 		m_current[row.first] = pushed;
