@@ -7,8 +7,10 @@
 enum class LayerType {
 	terrain,//地形データ
 	enemy,//敵データ
+	event,//イベントデータ
 };
 class Actor;
+class Collision;
 /// <summary>
 /// ステージデータクラス
 /// </summary>
@@ -22,7 +24,7 @@ private:
 	using StageData_t = std::vector<std::vector<uint8_t>>;
 	StageData_t data_;
 	int scroll_ = 0;//現在のスクロール量
-
+	bool isPause_ = false;
 	// データを転置(縦横いれかえる)
 	// rawData : 生データ
 	// data : 縦横入れ替えられた本データ
@@ -69,6 +71,14 @@ public:
 	/// <param name="offset">ずらして判定したいオフセットベクトル</param>
 	/// <returns>当たってるかどうか</returns>
 	bool IsHitTerrain(std::shared_ptr<Actor> actor, const Vector2& offset = {})const;
+	/// <summary>
+	/// 背景とアクターが衝突しているか(衝突相手検出用)
+	/// </summary>
+	/// <param name="actor">判定したい相手アクター</param>
+	/// <param name="targetColl">地形が持っている当たり判定情報(一時的なもの)</param>
+	/// <param name="offset">ずらして判定したいオフセットベクトル</param>
+	/// <returns>当たってるかどうか</returns>
+	bool IsHitTerrain(std::shared_ptr<Actor> actor,std::shared_ptr<Collision>& targetColl, const Vector2& offset = {})const;
 
 	/// <summary>
 	/// 背景とアクターを当たり判定し、当たっていればブロックする
@@ -78,6 +88,12 @@ public:
 	/// <param name="offset">オフセット</param>
 	/// <returns>当たってるかどうか</returns>
 	bool BlockTerrain(std::shared_ptr<Actor> actor, const Vector2& offset = {})const;
+
+	void PauseScroll();
+	void ResumeScroll();
+
+	//要説明
+	bool IsPausing()const;
 
 };
 

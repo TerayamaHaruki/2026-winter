@@ -6,7 +6,15 @@
 #include"Player.h"
 #include<DxLib.h>
 #include<cmath>
+#include"Collision.h"
 
+
+void Enemy::CheckOutScreen()
+{
+	if (IsOutScreen(GetPosition())) {
+		isDead_ = true;
+	}
+}
 
 Enemy::Enemy(int handle,const Position2& pos,float radius,
 			std::weak_ptr<Player> player,
@@ -33,4 +41,14 @@ void Enemy::OnHit(std::shared_ptr<Actor>)
 void Enemy::Init()
 {
 	CollisionSet();
+}
+
+void Enemy::LockOn()
+{
+	isLockedOn = true;
+}
+
+bool Enemy::IsLockedOn() const
+{
+	return isLockedOn;
 }

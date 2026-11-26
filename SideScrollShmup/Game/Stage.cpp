@@ -126,6 +126,7 @@ int Stage::GetCurrentScroll() const
 
 void Stage::Update()
 {
+	if (isPause_)return;
 	++scroll_;
 }
 
@@ -178,6 +179,12 @@ int Stage::GetChipWidth() const
 //地形との当たり判定
 bool Stage::IsHitTerrain(std::shared_ptr<Actor> actor, const Vector2& offset) const
 {
+	std::shared_ptr<Collision> targetCol;
+	return IsHitTerrain(actor,targetCol ,offset);
+}
+
+bool Stage::IsHitTerrain(std::shared_ptr<Actor> actor, std::shared_ptr<Collision>& targetColl, const Vector2& offset) const
+{
 	//画面サイズの取得
 	const auto& wsize = Application::GetInstance().GetWindowSize();
 	//チップ全体の高さ
@@ -185,7 +192,7 @@ bool Stage::IsHitTerrain(std::shared_ptr<Actor> actor, const Vector2& offset) co
 
 	//ステージの真ん中が画面の真ん中に来るように補正する
 	auto adjustHeight = (stageHeight - wsize.h) / 2;//描画的にずらすY
-	auto adjustYStartIdx = adjustHeight/chip_height;//当たる可能性のある部分から開始する
+	auto adjustYStartIdx = adjustHeight / chip_height;//当たる可能性のある部分から開始する
 
 	//１画面に見えるチップの数を計算しておく
 	const int viewWidth = wsize.w / chip_width;//1024/32=32が入ってる
@@ -212,8 +219,8 @@ bool Stage::IsHitTerrain(std::shared_ptr<Actor> actor, const Vector2& offset) co
 			chipPos.y -= adjustHeight;
 			//ステージのブロックはアクター扱いにしていないため、アクターなしのコリジョンオブジェクトを
 			//一時的に生成して、当たり判定を行う
-			auto terrainCol = std::make_shared<Collision>( chipPos,chip_width/2 );
-			if (IsHit(actor->GetCollision(), terrainCol,offset)) {
+			targetColl = std::make_shared<Collision>(chipPos, chip_width / 2);
+			if (IsHit(actor->GetCollision(), targetColl, offset)) {
 				return true;
 			}
 		}
@@ -267,4 +274,19 @@ bool Stage::BlockTerrain(std::shared_ptr<Actor> actor, const Vector2& offset) co
 		}
 	}
 	return false;
+}
+
+void Stage::PauseScroll()
+{
+	isPause_ = true;
+}
+
+void Stage::ResumeScroll()
+{
+	isPause_ = false;
+}
+
+bool Stage::IsPausing() const
+{
+	return isPause_;//要説明
 }

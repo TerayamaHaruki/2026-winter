@@ -11,7 +11,9 @@ Bullet::Bullet(int handle ,const Position2& pos, float radius):
 void Bullet::OnHit(const std::shared_ptr<Actor> actor)
 {
 	auto& pos = coll_->GetCircle().pos;
-	if (actor->GetType() == ActorType::player || IsOutScreen(pos)) {
+	if (actor->GetActorType() == ActorType::player || 
+		actor->GetActorType()==ActorType::force || 
+		IsOutScreen(pos)) {
 		isDead_ = true;
 	}
 }

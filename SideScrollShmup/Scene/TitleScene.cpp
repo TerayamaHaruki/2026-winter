@@ -62,7 +62,8 @@ void TitleScene::FadeDraw()
 
 void TitleScene::NormalDraw()
 {
-	DrawGraph(0, 0, backH_, true);
+	const auto& wsize = Application::GetInstance().GetWindowSize();
+	DrawExtendGraph(0, 0,wsize.w,wsize.h, backH_, true);
 	DrawGraph(50, 50, handle_, true);
 	DrawString(10, 10, L"Title Scene...", 0xffffff);
 }
@@ -71,8 +72,8 @@ TitleScene::TitleScene(SceneController& ctrl):Scene(ctrl)
 {
 	auto loader = Application::GetInstance().GetLoader();
 	indicatorH_ = loader->LoadGraph(L"Asset/img/Common/asteroid-small.png", AssetType::continuous);
-	handle_ = loader->LoadGraph(L"Asset/img/frienemy.png",AssetType::temporary);
-	backH_ = loader->LoadGraph(L"Asset/img/title_back.png",AssetType::temporary);
+	//handle_ = loader->LoadGraph(L"Asset/img/frienemy.png",AssetType::temporary);
+	backH_ = loader->LoadGraph(L"Asset/img/title_bg.jpg",AssetType::temporary);
 	
 
 	//最初の状態を代入してあげる

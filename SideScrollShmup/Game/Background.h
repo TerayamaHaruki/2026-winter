@@ -12,9 +12,12 @@ private:
 		Position2 pos;
 	};
 	std::vector<BGPart> bgParts_;
+	bool isPause_ = false;
 public:
 	Background();
 	void Update();
 	void Draw();
+	void PauseScroll();
+	void ResumeScroll();
 };
 

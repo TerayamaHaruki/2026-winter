@@ -53,9 +53,6 @@ void Zako::BackUpdate()
 	auto& pos = coll_->GetCircle().pos;
 	pos += vel_;
 	++frame_;
-	if (IsOutScreen(pos)) {
-		return;
-	}
 }
 
 Zako::Zako(int handle, const Position2& pos,
@@ -71,6 +68,7 @@ Zako::Zako(int handle, const Position2& pos,
 void Zako::Update()
 {
 	(this->*update_)();
+	CheckOutScreen();
 }
 
 void Zako::Draw()

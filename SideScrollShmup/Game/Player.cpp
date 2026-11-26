@@ -3,10 +3,13 @@
 #include"../FileLoader.h"
 #include"../Input.h"
 #include"Item.h"
+#include"Force.h"
 #include"EffectFactory.h"
+#include"ShotFactory.h"
 #include<DxLib.h>
 #include<algorithm>
 constexpr float player_default_speed = 4.0f;
+constexpr float player_speed_multiply = 1.25f;
 constexpr float player_scale = 2.0f;
 constexpr int player_img_width = 26;
 constexpr int player_img_height = 21;
@@ -18,6 +21,10 @@ constexpr int upper_img_idx = 2;//上昇するときのインデックス
 constexpr float player_hit_radius = 10.0f;//当たり判定の大きさ
 
 constexpr int resurrecting_interval = 120;//復活までの時間
+
+constexpr int missile_fire_interval = 100;//ミサイルのインターバル
+
+constexpr int full_charge_frames = 90;//フルチャージフレーム
 
 void Player::NormalUpdate()
 {
@@ -32,9 +39,10 @@ void Player::ResurrectingUpdate()
 }
 
 
-Player::Player(std::shared_ptr<EffectFactory> ef) :
+Player::Player(std::shared_ptr<EffectFactory> ef,std::shared_ptr<ShotFactory> sf) :
 	Actor({},player_hit_radius),
 	effectFactory_(ef),
+	shotFactory_(sf),
 	playerSpeed(player_default_speed)
 {
 	type_ = ActorType::player;
@@ -76,6 +84,51 @@ void Player::Update(Input& input)
 
 	//画面端を超えないように補正
 	AdjustPlayerPosition(pos, wsize);
+
+	//通常ショット
+	if (input.IsTriggered("shot")) {
+		if (hasReflectLaser_) {//レーザーを持っている
+			Vector2 vec = { 1.0f ,0.0f};
+			if (!force_.expired()) {
+				if (force_.lock()->IsBackAttached()) {
+					vec.x = -1.0f;
+				}
+			}
+			shotFactory_->Fire(GetPosition(), ShotType::reflect_laser,vec);
+		}
+		else {
+			shotFactory_->Fire(GetPosition(), ShotType::normal);//通常弾
+		}
+		
+		if (hasMissile_ && missileFrame_==0) {
+			auto pos = GetPosition();
+			pos.y -= player_scale * (player_img_height / 2);
+			shotFactory_->Fire(pos, ShotType::missile);
+			pos.y += player_scale * player_img_height;
+			shotFactory_->Fire(pos, ShotType::missile);
+			missileFrame_ = missile_fire_interval;
+		}
+	}
+	//チャージショットのためのチャージ時間チェック
+	if (input.IsPressed("shot")) {
+		chargingFrame_=std::min(chargingFrame_+1,full_charge_frames);
+	}
+	else {//ボタンを離したとき
+		if (chargingFrame_ == full_charge_frames) {
+			shotFactory_->Fire(pos, ShotType::charge);
+		}
+		chargingFrame_ = 0;
+	}
+	//ミサイルを装備している状態なら
+	if (hasMissile_) {
+		missileFrame_ = std::max(missileFrame_ - 1, 0);
+	}
+
+	if (input.IsTriggered("power")) {
+		if (!force_.expired()) {
+			force_.lock()->Action();
+		}
+	}
 
 	Update();
 }
@@ -126,19 +179,32 @@ void Player::OnHit(std::shared_ptr<Actor> actor)
 		return;
 	}
 
-	auto type = actor->GetType();
+	auto type = actor->GetActorType();
 	if (type == ActorType::enemy || type==ActorType::bullet) {
 		KillPlayer();
 		return;
 	}
 
+	//アイテムを取得した場合
 	if (type == ActorType::item) {
 		//ダウンキャストを行う
 		auto item = std::dynamic_pointer_cast<Item>(actor);
-		if (item) {
-			switch (item->GetType()) {
+		if (item) {//ダウンキャストできてるか？
+			//できていればタイプによって挙動を変える
+			switch (item->GetItemType()) {
 			case ItemType::speedup:
-				playerSpeed *= 1.5f;
+				playerSpeed *= player_speed_multiply;
+				break;
+			case ItemType::missile:
+				hasMissile_ = true;
+				break;
+			case ItemType::force:
+				if (!force_.expired()) {
+					force_.lock()->Run();
+				}
+				break;
+			case ItemType::laser:
+				hasReflectLaser_ = true;
 				break;
 			default:
 				break;
@@ -158,4 +224,14 @@ void Player::KillPlayer()
 	update_ = &Player::ResurrectingUpdate;//復活中
 	//復活までに要する時間を入れておく
 	resurrectFrame_ = resurrecting_interval;
+}
+
+void Player::SetForce(std::weak_ptr<Force> force)
+{
+	force_ = force;
+}
+
+float Player::GetChargingRate() const
+{
+	return static_cast<float>(chargingFrame_) / static_cast<float>(full_charge_frames);
 }

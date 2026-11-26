@@ -214,6 +214,7 @@ void Gunner::Update()
 {
 	++frame_;
 	(this->*update_)();
+	CheckOutScreen();
 }
 
 void Gunner::Draw()

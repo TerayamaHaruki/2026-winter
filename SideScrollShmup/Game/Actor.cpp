@@ -5,7 +5,7 @@ Actor::Actor(const Position2& pos, float radius)
 	coll_ = std::make_shared<Collision>(pos, radius);
 }
 
-ActorType Actor::GetType()const { 
+ActorType Actor::GetActorType()const { 
 	return type_; 
 }
 
@@ -21,7 +21,12 @@ void Actor::CollisionSet()
 
 Position2& Actor::GetPosition()
 {
-	return coll_->GetCircle().pos;
+	if (coll_->GetType() == CollisionType::circle) {
+		return coll_->GetCircle().pos;
+	}
+	else {
+		return coll_->GetCapsule().pos;
+	}
 }
 
 std::shared_ptr<Collision> Actor::GetCollision()

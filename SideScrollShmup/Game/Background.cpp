@@ -23,6 +23,7 @@ Background::Background()
 
 void Background::Update()
 {
+	if (isPause_)return;
 	for (auto& bgPart : bgParts_) {
 		bgPart.pos.x += bgPart.scrollSpeeds;
 	}
@@ -63,4 +64,14 @@ void Background::Draw()
 				bgPart.handle, true);
 		}
 	}
+}
+
+void Background::PauseScroll()
+{
+	isPause_ = true;
+}
+
+void Background::ResumeScroll()
+{
+	isPause_ = false;
 }

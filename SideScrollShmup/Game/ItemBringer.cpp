@@ -81,6 +81,7 @@ void ItemBringer::Update()
 {
 	(this->*update_)();
 	++frame_;
+	CheckOutScreen();
 }
 
 void ItemBringer::Draw()
@@ -105,8 +106,13 @@ void ItemBringer::OnHit(std::shared_ptr<Actor> actor)
 		//ToDo : ここでアイテムも落とすようにする
 		if (!itemFactory_.expired()) {
 			const auto& pos = GetPosition();
+			static bool isFirst = true;//最初の１回しか実行されない
 			//アイテムを生む
-			int itemno = GetRand(3) + 1;//1～4までの数値をランダムに得る
+			int itemno = isFirst ? 
+							static_cast<int>(ItemType::missile) 
+								: 
+							GetRand(3) + 1;//1～4までの数値をランダムに得る
+			isFirst = false;//毎回実行される
 			itemFactory_.lock()->Create(pos, static_cast<ItemType>(itemno));
 		}
 	}

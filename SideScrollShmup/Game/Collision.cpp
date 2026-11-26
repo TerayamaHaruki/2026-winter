@@ -1,12 +1,60 @@
 ﻿#include "Collision.h"
 #include"../Application.h"
+#include<algorithm>
 
 constexpr int out_screen_margin = 100;
+
+
+namespace {
+	/// <summary>
+	/// 二つの円が交差するかどうか
+	/// </summary>
+	/// <param name="cA">円A</param>
+	/// <param name="cB">円B</param>
+	/// <returns>true:交差した / false:交差していない</returns>
+	bool IsHit(const Circle& cA, const Circle& cB, const Vector2& offsetA, const Vector2& offsetB) {
+		return (cA.pos + offsetA - cB.pos + offsetB).Length() <= cA.radius + cB.radius;
+	}
+	bool IsHit(const Circle& cA, const Circle& cB) {
+		Vector2 zeroVec = {};
+		return IsHit(cA, cB, zeroVec, zeroVec);
+	}
+
+
+	/// <summary>
+	/// カプセルと円が交差するかどうか
+	/// </summary>
+	/// <param name="capA">カプセルA</param>
+	/// <param name="cB">円B</param>
+	/// <returns>true:交差した / false:交差していない</returns>
+	bool IsHit(const Capsule& capA, const Circle& cB,const Vector2& offsetA,const Vector2& offsetB) {
+		auto cap = capA;
+		cap.pos += offsetA;
+		auto c = cB;
+		c.pos += offsetB;
+		auto vec = c.pos - cap.pos;
+		auto projVec = GetProjectionVector(vec, cap.vec, true);
+		return (vec - projVec).Length() <= cap.radius + c.radius;
+	}
+	bool IsHit(const Capsule& capA, const Circle& cB) {
+		Vector2 zeroVec = {};
+		return IsHit(capA, cB, zeroVec, zeroVec);
+	}
+	
+
+}
 
 Collision::Collision(const Position2& pos, float radius)
 {
 	circle_.pos = pos;
 	circle_.radius = radius;
+}
+
+Collision::Collision(const Position2& pos, const Vector2& vec, float radius):
+	capsule_{pos,vec,radius},
+	type_(CollisionType::capsule)
+{
+
 }
 
 void Collision::SetOwner(std::shared_ptr<Actor> owner)
@@ -22,21 +70,50 @@ std::shared_ptr<Actor> Collision::GetOwner()
 	return owner_.lock();
 }
 
+void Collision::SetCapsule(const Position2& pos, const Vector2& vec, float radius)
+{
+	type_ = CollisionType::capsule;
+	capsule_.pos = pos;
+	capsule_.vec = vec;
+	capsule_.radius = radius;
+}
+
 Circle& Collision::GetCircle()
 {
 	return circle_;
 }
 
+Capsule& Collision::GetCapsule()
+{
+	return capsule_;
+}
+
+CollisionType Collision::GetType() const
+{
+	return type_;
+}
+
 void Collision::Draw()
 {
-	circle_.Draw(0xaaffaa);
+	if (type_ == CollisionType::circle) {
+		circle_.Draw(0xaaffaa);
+	}
+	else {
+		capsule_.Draw(0xaaffaa);
+	}
+	
 }
+
 
 bool IsHit(Collision& colA, Collision& colB)
 {
-	const auto& cA = colA.GetCircle();
-	const auto& cB = colB.GetCircle();
-	return (cB.pos - cA.pos).Length() <= cA.radius + cB.radius;
+	if (colA.GetType() == CollisionType::circle && colB.GetType() == CollisionType::circle) {
+		return IsHit(colA.GetCircle(), colB.GetCircle());
+	}
+	if (colA.GetType() == CollisionType::capsule && colB.GetType() == CollisionType::circle) {
+		return IsHit(colA.GetCapsule(), colB.GetCircle());
+	}
+	return false;
 }
 
 bool IsHit(const std::shared_ptr<Collision> colA, const std::shared_ptr<Collision> colB,
@@ -44,9 +121,15 @@ bool IsHit(const std::shared_ptr<Collision> colA, const std::shared_ptr<Collisio
 {
 	//円の当たり判定：中心と中心の距離を測り、半径を足したものよりも小さければ
 	//当たっている
-	const auto& cA = colA->GetCircle();
-	const auto& cB = colB->GetCircle();
-	return ((cB.pos+offsetB) - (cA.pos+offsetA)).Length() <= cA.radius + cB.radius;
+	//const auto& cA = colA->GetCircle();
+	//const auto& cB = colB->GetCircle();
+	//return ((cB.pos+offsetB) - (cA.pos+offsetA)).Length() <= cA.radius + cB.radius;
+	if (colA->GetType() == CollisionType::circle && colB->GetType() == CollisionType::circle) {
+		return IsHit(colA->GetCircle(), colB->GetCircle(),offsetA,offsetB);
+	}
+	if (colA->GetType() == CollisionType::capsule && colB->GetType() == CollisionType::circle) {
+		return IsHit(colA->GetCapsule(), colB->GetCircle(),offsetA,offsetB);
+	}
 }
 
 Vector2 GetOverlap(const std::shared_ptr<Collision> colA, const std::shared_ptr<Collision> colB)

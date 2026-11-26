@@ -2,16 +2,26 @@
 #include"../Geometry.h"
 #include<memory>
 class Actor;//持ち主
+enum class CollisionType {
+	circle,//円の当たり判定
+	capsule//カプセルの当たり判定
+};
 class Collision
 {
 private:
 	std::weak_ptr<Actor> owner_;
 	Circle circle_;
+	Capsule capsule_;
+	CollisionType type_=CollisionType::circle;
 public:
 	Collision(const Position2& pos, float radius);
+	Collision(const Position2& pos, const Vector2& vec,float radius);
 	void SetOwner(std::shared_ptr<Actor> owner);
 	std::shared_ptr<Actor> GetOwner();
+	void SetCapsule(const Position2& pos, const Vector2& vec, float radius);
 	Circle& GetCircle();
+	Capsule& GetCapsule();
+	CollisionType GetType()const;
 	void Draw();//デバッグ用の表示
 };
 /// <summary>

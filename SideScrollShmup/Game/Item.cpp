@@ -17,8 +17,8 @@ Item::Item(int handle, const Position2& pos, ItemType type,std::weak_ptr<GameSce
 		initScroll_=gameScene_.lock()->GetStage()->GetCurrentScroll();
 	}
 	basePos_ = pos;
-	Actor::type_ = ActorType::item;//修正箇所
-	type_ = type;//修正箇所
+	type_ = ActorType::item;//Actor種別は「アイテム」
+	itemType_ = type;//アイテム種別は引数からもらう
 }
 
 void Item::Update()
@@ -45,12 +45,12 @@ void Item::Draw()
 
 void Item::OnHit(const std::shared_ptr<Actor> actor)
 {
-	if (actor->GetType() == ActorType::player) {
+	if (actor->GetActorType() == ActorType::player) {
 		isDead_ = true;
 	}
 }
 
-ItemType Item::GetType() const
+ItemType Item::GetItemType() const
 {
-	return type_;
+	return itemType_;
 }

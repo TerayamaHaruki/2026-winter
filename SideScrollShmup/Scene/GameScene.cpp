@@ -12,36 +12,45 @@
 #include"PauseScene.h"
 
 #include"../Game/Player.h"
+#include"../Game/Force.h"
 #include"../Game/Shot.h"
 #include"../Game/Background.h"
 #include"../Game/Enemy.h"
 #include"../Game/Bullet.h"
+#include"../Game/EventActor.h"
 #include"../Game/EnemyFactory.h"
 #include"../Game/EffectFactory.h"
 #include"../Game/BulletFactory.h"
 #include"../Game/ItemFactory.h"
+#include"../Game/ShotFactory.h"
+#include"../Game/EventController.h"
 #include"../Game/Stage.h"
 #include"../Game/Collision.h"
 constexpr int fade_interval = 20;
+constexpr int gui_margin = 50;
 
 void GameScene::InitUpdate(Input&)
 {
 	auto loader = Application::GetInstance().GetLoader();
 
 	effectFactory_ = std::make_shared<EffectFactory>();
-	player_ = std::make_shared<Player>(effectFactory_);
-	bulletFactory_ = std::make_shared<BulletFactory>(effectFactory_);
+	shotFactory_ = std::make_shared<ShotFactory>(shared_from_this());
+	player_ = std::make_shared<Player>(effectFactory_,shotFactory_);
 
-	for (auto& shot : shots_) {
-		shot = std::make_shared<Shot>();
-		shot->Init();
-	}
+	force_ = std::make_shared<Force>(loader->LoadGraph(L"Asset/img/Actor/force.png"),
+									player_,
+									shared_from_this());
+	player_->SetForce(force_);
+	
+	bulletFactory_ = std::make_shared<BulletFactory>(effectFactory_);
 	itemFactory_ = std::make_shared<ItemFactory>(shared_from_this());
 	enemyFactory_ = std::make_shared<EnemyFactory>(player_,
 													effectFactory_,
 													bulletFactory_,
 													itemFactory_,
 													shared_from_this());
+	eventController_ = std::make_shared < EventController>(shared_from_this(),
+													enemyFactory_);
 	
 	background_ = std::make_shared<Background>();
 
@@ -70,13 +79,12 @@ void GameScene::NormalUpdate(Input& input)
 	background_->Update();
 	stage_->Update();
 	player_->Update(input);
+	force_->Update();
 	enemyFactory_->Update();
 	effectFactory_->Update();
 	bulletFactory_->Update();
 	itemFactory_->Update();
-	for (auto& shot : shots_) {
-		shot->Update();
-	}
+	shotFactory_->Update();
 
 	if (input.IsTriggered("ok")) {
 		update_ = &GameScene::FadeOutUpdate;
@@ -92,19 +100,16 @@ void GameScene::NormalUpdate(Input& input)
 		controller_.PushScene(std::make_shared<PauseScene>(controller_));
 		return;
 	}
-	if (input.IsTriggered("shot")) {
-		for (auto& shot : shots_) {
-			if (shot->IsDead()) {
-				shot->Fire(player_->GetPosition());
-				break;
-			}
-		}
-	}
+	//if (input.IsTriggered("shot")) {
+	//	shotFactory_->Fire(player_->GetPosition(),ShotType::normal);
+	//}
 	//敵と自機弾の当たり判定
+	auto& shots = shotFactory_->GetShots();
 	auto& enemies = enemyFactory_->GetEnemies();
 	for (auto& enemy : enemies) {
 		if (enemy->IsDead())continue;
-		for (auto& shot : shots_) {
+
+		for (auto& shot : shots) {
 			if (shot->IsDead())continue;
 			//それぞれの弾・敵を当たり判定する
 			if (IsHit(shot->GetCollision(), enemy->GetCollision())) {
@@ -114,6 +119,25 @@ void GameScene::NormalUpdate(Input& input)
 			}
 		}
 	}
+
+	//フォースと敵、フォースと弾の当たり判定
+	if (!force_->IsDead()) {
+		for (auto& enemy : enemies) {
+			if (enemy->IsDead())continue;
+			//当たり判定して
+			if (IsHit(force_->GetCollision(), enemy->GetCollision())) {
+				enemy->OnHit(force_);
+			}
+		}
+		auto& bullets = bulletFactory_->GetBullets();
+		for (auto& bullet : bullets) {
+			if (bullet->IsDead())continue;
+			if (IsHit(force_->GetCollision(), bullet->GetCollision())) {
+				bullet->OnHit(force_);
+			}
+		}
+	}
+
 	if (!player_->IsDead()&&!player_->IsResurrecting()) {
 		//敵と自機の当たり判定
 		for (auto& enemy : enemies) {
@@ -136,6 +160,10 @@ void GameScene::NormalUpdate(Input& input)
 			}
 		}
 	}
+
+	
+
+
 	for (auto& item : itemFactory_->GetItems()) {
 		if (IsHit(player_->GetCollision(), item->GetCollision())) {
 			player_->OnHit(item);
@@ -149,33 +177,58 @@ void GameScene::NormalUpdate(Input& input)
 	if (stage_->IsHitTerrain(player_)) {
 		player_->OnHit(std::shared_ptr<Actor>());
 	}
-	for (auto& shot : shots_) {
+	//地形とショットの当たり判定
+	for (auto& shot : shots) {
 		if (shot->IsDead())continue;
-		if (stage_->IsHitTerrain(shot)) {
+		std::shared_ptr<Collision> targetColl;
+		if (stage_->IsHitTerrain(shot,targetColl)) {
 			shot->OnHit(std::shared_ptr<Actor>());
+			shot->OnHit(targetColl);
 		}
 	}
 	
+	//要説明(この条件がないと敵が無限湧きしてしまう)
+	if(!stage_->IsPausing()){//要説明
+		//現在のスクロールに合わせて敵を出現させる
+		auto scroll = stage_->GetCurrentScroll();
+		//チップごとにマップの読み直しを行う
+		const auto chipWidth = stage_->GetChipWidth();
 
-	//現在のスクロールに合わせて敵を出現させる
-	auto scroll = stage_->GetCurrentScroll();
-	//チップごとにマップの読み直しを行う
-	const auto chipWidth = stage_->GetChipWidth();
-	if (scroll % chipWidth  == 0) {//チップサイズ分進むまでは特に何もしない
-		auto colNo = (scroll / chipWidth) + chipWidth;//ひとつ右の列
-		//データを１列分ロードする
-		auto column = stage_->GetColumn(LayerType::enemy,colNo);
-		for (int yIdx = 0;yIdx < column.size();++yIdx) {
-			auto enemyType = static_cast<EnemyType>(column[yIdx]);
-			if (enemyType == EnemyType::none) {
-				continue;
+		if (scroll % chipWidth == 0) {//チップサイズ分進むまでは特に何もしない
+			auto colNo = (scroll / chipWidth) + chipWidth;//ひとつ右の列
+			{//敵
+				//敵データを１列分ロードする
+				auto column = stage_->GetColumn(LayerType::enemy, colNo);
+				for (int yIdx = 0;yIdx < column.size();++yIdx) {
+					auto enemyType = static_cast<EnemyType>(column[yIdx]);
+					if (enemyType == EnemyType::none) {
+						continue;
+					}
+					//敵の出現場所は右端から出現
+					//(もし左から出現するような敵の場合は敵じたいにそういう機能を
+					// 追加しておく)
+					Position2 enemyPos = { static_cast<float>(wsize.w),static_cast<float>(yIdx * 32) };
+					enemyFactory_->CreateEnemy(enemyPos, enemyType);
+				}
 			}
-			//敵の出現場所は右端から出現
-			//(もし左から出現するような敵の場合は敵じたいにそういう機能を
-			// 追加しておく)
-			Position2 enemyPos = { wsize.w,static_cast<float>(yIdx * 32) };
-			enemyFactory_->CreateEnemy(enemyPos,enemyType);
+			{//イベント
+				//イベントデータを１列分ロードする
+				auto column = stage_->GetColumn(LayerType::event, colNo);
+				for (int yIdx = 0;yIdx < column.size();++yIdx) {
+					auto eventType = static_cast<EventType>(column[yIdx]);
+					if (eventType == EventType::none) {
+						continue;
+					}
+					//敵の出現場所は右端から出現
+					//(もし左から出現するような敵の場合は敵じたいにそういう機能を
+					// 追加しておく)
+					Position2 eventPos = { static_cast<float>(wsize.w),static_cast<float>(yIdx * 32) };
+					eventController_->Create(eventPos, eventType);
+				}
+			}
 		}
+		
+
 	}
 		
 	
@@ -194,14 +247,30 @@ void GameScene::NormalDraw()
 	background_->Draw();
 	stage_->Draw();
 	DrawString(10, 10, L"Game Scene...", 0xffffff);
-	for (auto& shot : shots_) {
-		shot->Draw();
-	}
+	shotFactory_->Draw();
 	player_->Draw();
+	force_->Draw();
 	enemyFactory_->Draw();
 	effectFactory_->Draw();
 	bulletFactory_->Draw();
 	itemFactory_->Draw();
+
+	const auto& wsize = Application::GetInstance().GetWindowSize();
+	//簡易版のゲージを表示
+	constexpr int charge_gauge_width = 300;
+	constexpr int charge_gauge_height = 20;
+
+	const float chargeRate = player_->GetChargingRate();
+	//チャージゲージ本体
+	DrawBox(gui_margin, wsize.h - gui_margin - charge_gauge_height,
+		gui_margin + charge_gauge_width*chargeRate, wsize.h - gui_margin,
+		0xaaaaff,true);
+
+	//チャージゲージ枠
+	DrawBox(gui_margin, wsize.h - gui_margin - charge_gauge_height,
+		gui_margin + charge_gauge_width, wsize.h - gui_margin,
+		0xffffff,false,2);
+
 }
 
 void GameScene::FadeDraw()
@@ -247,4 +316,26 @@ void GameScene::Draw()
 const std::shared_ptr<Stage> GameScene::GetStage() const
 {
 	return stage_;
+}
+
+const std::shared_ptr<EnemyFactory> GameScene::GetEnemyFactory() const
+{
+	return enemyFactory_;
+}
+
+const std::shared_ptr<ShotFactory> GameScene::GetShotFactory() const
+{
+	return shotFactory_;
+}
+
+void GameScene::PauseScroll()
+{
+	stage_->PauseScroll();
+	background_->PauseScroll();
+}
+
+void GameScene::ResumeScroll()
+{
+	stage_->ResumeScroll();
+	background_->ResumeScroll();
 }

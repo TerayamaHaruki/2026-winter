@@ -7,7 +7,9 @@ enum class ActorType {
 	enemy,//敵
 	shot,//プレイヤーの弾
 	bullet,//敵の弾
-	item//アイテム
+	item,//アイテム
+	force,//フォース
+	event//イベントアクター
 };
 /// <summary>
 /// ゲームシーンに配置可能な基底クラス
@@ -25,7 +27,10 @@ public:
 	virtual void Update()=0;//座標等の更新
 	virtual void Draw() = 0;//描画
 	virtual void OnHit(const std::shared_ptr<Actor> actor) = 0;
-	ActorType GetType()const;
+	//アクターではなくコリジョンそのものとの反応
+	//主にステージとの当たり判定に使用する想定
+	virtual void OnHit(const std::shared_ptr<Collision> collision) {};
+	ActorType GetActorType()const;
 	void SetPosition(const Position2& pos);
 	void CollisionSet();
 	Position2& GetPosition();
