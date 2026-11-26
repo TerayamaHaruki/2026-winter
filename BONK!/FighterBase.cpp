@@ -16,18 +16,11 @@ FighterBase::FighterBase():
 	m_isGuarding(false),
 	m_isFacingRight(true),
 	m_color(0),
-	m_keyRight(0),
-	m_keyLeft(0),
-	m_keyUp(0),
-	m_keyDown(0),
-	m_keyAttack(0),
-	m_keyStrong(0),
+	m_prefix("p1_"),
 	m_isCrouching(false),
 	m_isAttacking(false),
 	m_attackFrame(0),
 	m_attackHit(false),
-	m_prevAttackKey(0),
-	m_prevStrongKey(0),
 	m_isStrongAttack(false),
 	m_attackActiveStart(5),
 	m_attackActiveEnd(8),
@@ -43,14 +36,9 @@ FighterBase::~FighterBase()
 {
 }
 
-void FighterBase::SetKeys(int right, int left, int up, int down, int attack, int strongAttack)
+void FighterBase::SetInputPrefix(const std::string& prefix)
 {
-	m_keyRight = right;
-	m_keyLeft = left;
-	m_keyUp = up;
-	m_keyDown = down;
-	m_keyAttack = attack;
-	m_keyStrong = strongAttack;
+	m_prefix = prefix;
 }
 
 void FighterBase::SetPosition(float x, bool isFacingRight)

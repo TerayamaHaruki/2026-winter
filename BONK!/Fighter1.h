@@ -10,7 +10,7 @@ public:
 
 	virtual void Init() override;
 	virtual void End() override;
-	virtual void Update() override;
+	virtual void Update(Input& input) override;
 	virtual void Draw() override;
 
 private:

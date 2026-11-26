@@ -45,6 +45,10 @@ Input::Input()
 		{ PeripheralType::keybd, KEY_INPUT_K },
 		{ PeripheralType::pad,   PAD_INPUT_X },     // Yボタン
 	};
+	m_table["p1_down"] = {
+		{ PeripheralType::keybd, KEY_INPUT_S },
+		{ PeripheralType::pad,	 PAD_INPUT_DOWN },
+	};
 
 	// 2P
 	m_table["p2_right"] = {
@@ -67,6 +71,10 @@ Input::Input()
 	m_table["p2_strong"] = {
 		{ PeripheralType::keybd, KEY_INPUT_PERIOD },
 		{ PeripheralType::pad2,  PAD_INPUT_X },
+	};
+	m_table["p2_down"] = {
+		{ PeripheralType::keybd, KEY_INPUT_DOWN },
+		{ PeripheralType::pad2,  PAD_INPUT_DOWN },
 	};
 
 	// 最初は全部「押していない」にしておく(ここは変更なし)
