@@ -6,7 +6,7 @@
 enum class PeripheralType
 {
 	keybd,	// キーボード
-	pad1,	// パッド1
+	pad,	// パッド1
 	pad2,	// パッド2
 };
 
@@ -34,7 +34,7 @@ public:
 
 private:
 	// 名前 → その名前に使うキーの一覧
-	std::map<std::string, std::vector<int>> m_table;
+	std::map<std::string, std::vector<InputInfo>> m_table;
 	// 名前 → いま押されているか
 	std::map<std::string, bool> m_current;
 	// 名前 → 前のフレームに押されていたか

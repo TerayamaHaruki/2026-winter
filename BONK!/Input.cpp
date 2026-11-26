@@ -3,7 +3,7 @@
 
 Input::Input()
 {
-	// ---- タイトル・ポーズなどの操作 ----
+	// タイトル・ポーズなどの操作
 	m_table["ok"] = {
 		{ PeripheralType::keybd, KEY_INPUT_RETURN },
 		{ PeripheralType::keybd, KEY_INPUT_NUMPADENTER },
@@ -23,7 +23,7 @@ Input::Input()
 		{ PeripheralType::pad,   PAD_INPUT_DOWN },
 	};
 
-	// ---- 1P(キーボードは D/A/W/J/K、パッドは1つ目) ----
+	// 1P
 	m_table["p1_right"] = {
 		{ PeripheralType::keybd, KEY_INPUT_D },
 		{ PeripheralType::pad,   PAD_INPUT_RIGHT },
@@ -46,7 +46,7 @@ Input::Input()
 		{ PeripheralType::pad,   PAD_INPUT_X },     // Yボタン
 	};
 
-	// ---- 2P(キーボードは矢印キー/カンマ/ピリオド、パッドは2つ目) ----
+	// 2P
 	m_table["p2_right"] = {
 		{ PeripheralType::keybd, KEY_INPUT_RIGHT },
 		{ PeripheralType::pad2,  PAD_INPUT_RIGHT },
@@ -100,10 +100,10 @@ void Input::Update()
 	{
 		bool pushed = false;
 
-		// ★ 登録されている入力を1つずつ調べる(型が InputInfo になった)
+		// 登録されている入力を1つずつ調べる
 		for (const InputInfo& info : row.second)
 		{
-			// ★ 機器の種類によって、調べ方を変える
+			// 機器の種類によって、調べ方を変える
 			switch (info.type)
 			{
 			case PeripheralType::keybd:
