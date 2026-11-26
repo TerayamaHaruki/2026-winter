@@ -9,12 +9,12 @@
 
 namespace
 {
-	// 画面の中央にそろえて文字を描く
-	void DrawCenterString(int y, const char* text, unsigned int color)
-	{
-		int width = GetDrawStringWidth(text, static_cast<int>(std::strlen(text)));
-		DrawString((Game::kScreenWidth - width) / 2, y, text, color);
-	}
+	//// 画面の中央にそろえて文字を描く
+	//void DrawCenterString(int y, const char* text, unsigned int color)
+	//{
+	//	int width = GetDrawStringWidth(text, static_cast<int>(std::strlen(text)));
+	//	DrawString((Game::kScreenWidth - width) / 2, y, text, color);
+	//}
 }
 
 TitleScene::TitleScene(SceneController& controller) :
@@ -46,22 +46,22 @@ void TitleScene::Draw()
 	// 背景
 	DrawBox(0, 0, Game::kScreenWidth, Game::kScreenHeight, GetColor(20, 24, 48), TRUE);
 
-	// タイトル
-	SetFontSize(96);
-	DrawCenterString(200, "BONK!", GetColor(242, 184, 75));
+	//// タイトル
+	//SetFontSize(96);
+	//DrawCenterString(200, "BONK!", GetColor(242, 184, 75));
 
-	// 30フレームごとに、出たり消えたりする
-	SetFontSize(32);
-	if ((m_frame / 30) % 2 == 0)
-	{
-		DrawCenterString(450, "PRESS ENTER", GetColor(255, 255, 255));
-	}
+	//// 30フレームごとに、出たり消えたりする
+	//SetFontSize(32);
+	//if ((m_frame / 30) % 2 == 0)
+	//{
+	//	DrawCenterString(450, "PRESS ENTER", GetColor(255, 255, 255));
+	//}
 
 	// 操作説明
-	SetFontSize(20);
+	/*SetFontSize(20);
 	DrawCenterString(580, "1P : A D move / W jump / J attack", GetColor(180, 186, 220));
 	DrawCenterString(612, "2P : Left Right move / Up jump / , attack", GetColor(180, 186, 220));
-	DrawCenterString(644, "P : pause     ESC : quit", GetColor(180, 186, 220));
+	DrawCenterString(644, "P : pause     ESC : quit", GetColor(180, 186, 220));*/
 
 	// 文字の大きさを元に戻す
 	SetFontSize(16);

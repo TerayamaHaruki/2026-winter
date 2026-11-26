@@ -19,8 +19,10 @@ FighterBase::FighterBase():
 	m_keyRight(0),
 	m_keyLeft(0),
 	m_keyUp(0),
+	m_keyDown(0),
 	m_keyAttack(0),
 	m_keyStrong(0),
+	m_isCrouching(false),
 	m_isAttacking(false),
 	m_attackFrame(0),
 	m_attackHit(false),
@@ -41,11 +43,12 @@ FighterBase::~FighterBase()
 {
 }
 
-void FighterBase::SetKeys(int right, int left, int up, int attack, int strongAttack)
+void FighterBase::SetKeys(int right, int left, int up, int down, int attack, int strongAttack)
 {
 	m_keyRight = right;
 	m_keyLeft = left;
 	m_keyUp = up;
+	m_keyDown = down;
 	m_keyAttack = attack;
 	m_keyStrong = strongAttack;
 }

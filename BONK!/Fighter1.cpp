@@ -4,7 +4,9 @@
 
 namespace
 {
-	constexpr float kGroundY = 500.0f; // 床の高さ(Stageと同じ値)
+	constexpr float kGroundY = 500.0f; // 床の高さ
+	constexpr float kStandHeight = 80.0f;   // 立っているときの高さ
+	constexpr float kCrouchHeight = 50.0f;  // しゃがんだときの高さ
 }
 
 Fighter1::Fighter1()
@@ -28,8 +30,6 @@ void Fighter1::Init()
 	m_air = false; // 空中状態フラグ
 	m_isFacingRight = true; // 向きフラグ
 	m_color = GetColor(255, 0, 0); // 体の色(赤)
-
-	// 弱攻撃・強攻撃のデータは、攻撃を始めるとき(Update)に入れる
 }
 
 void Fighter1::End()
@@ -77,7 +77,7 @@ void Fighter1::Update()
 		m_attackFrame = 0;
 		m_attackHit = false;
 
-		// 弱攻撃のデータ
+		// 弱攻撃
 		m_attackActiveStart = 5;  // 5フレーム目から判定が出る
 		m_attackActiveEnd = 8;    // 8フレーム目の手前まで(3フレーム)
 		m_attackTotal = 20;       // 20フレームで終わる
@@ -86,7 +86,7 @@ void Fighter1::Update()
 		m_attackH = 30.0f;        // 判定の高さ
 		m_attackOffsetY = 20.0f;  // 体の上から20px下
 	}
-	// 強攻撃(弱攻撃より、遅い・長い・痛い)
+	// 強攻撃
 	else if (nowStrongKey == 1 && m_prevStrongKey == 0 && m_isAttacking == false && m_air == false)
 	{
 		m_isAttacking = true;
@@ -103,11 +103,44 @@ void Fighter1::Update()
 		m_attackH = 40.0f;        // 判定の高さ
 		m_attackOffsetY = 15.0f;  // 体の上から15px下
 	}
+	// 空中弱
+	else if (nowAttackKey == 1 && m_prevAttackKey == 0 && m_isAttacking == false && m_air == true)
+	{
+		m_isAttacking = true;
+		m_isStrongAttack = false;
+		m_attackFrame = 0;
+		m_attackHit = false;
+
+		//空中弱
+		m_attackActiveStart = 4;
+		m_attackActiveEnd = 12;
+		m_attackTotal = 20;
+		m_attackDamage = 7;
+		m_attackW = 30.0f;
+		m_attackH = 20.0f;
+		m_attackOffsetY = 70.0f;
+	}
 	m_prevAttackKey = nowAttackKey;
 	m_prevStrongKey = nowStrongKey;
 
-	// 地上にいるときの移動(攻撃中は動けない) 
+	// しゃがみ
 	if (m_air == false && m_isAttacking == false)
+	{
+		if (CheckHitKey(m_keyDown))
+		{
+			m_isCrouching = true;
+			m_height = kCrouchHeight;
+		}
+		else
+		{
+			m_isCrouching = false;
+			m_height = kStandHeight;
+		}
+		m_y = kGroundY - m_height;
+	}
+
+	// 地上にいるときの移動(攻撃中は動けない) 
+	if (m_air == false && m_isAttacking == false && m_isCrouching == false)
 	{
 		if (CheckHitKey(forwardKey))
 		{

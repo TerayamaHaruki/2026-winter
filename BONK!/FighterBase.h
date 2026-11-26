@@ -12,7 +12,7 @@ public:
 
 	// GameSceneから使う関数
 	// 操作するキーを決める(右・左・上・弱攻撃・強攻撃)
-	void SetKeys(int right, int left, int up, int attack, int strongAttack);
+	void SetKeys(int right, int left, int up, int down, int attack, int strongAttack);
 	// 開始位置と向きを決める
 	void SetPosition(float x, bool isFacingRight);
 	// 体の色を決める
@@ -70,8 +70,10 @@ protected:
 	int m_keyRight;
 	int m_keyLeft;
 	int m_keyUp;
+	int m_keyDown;
 	int m_keyAttack;       // 弱攻撃のキー
 	int m_keyStrong;       // 強攻撃のキー
+	bool m_isCrouching;
 
 	// 攻撃
 	bool m_isAttacking;     // 攻撃中かどうか
