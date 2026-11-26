@@ -1,4 +1,5 @@
 #include "Fighter1.h"
+#include "Input.h"
 #include "DxLib.h"
 #include "Game.h"
 
@@ -36,24 +37,32 @@ void Fighter1::End()
 {
 }
 
-void Fighter1::Update()
+void Fighter1::Update(Input& input)
 {
-	// 前と後ろのキーを決める(向いている方向が「前」) 
-	int forwardKey;
-	int backKey;
+	// 前と後ろの入力の名前を決める(向いている方向が「前」)
+	std::string forwardName;
+	std::string backName;
 	float dir; // 右向きなら1、左向きなら-1
 	if (m_isFacingRight == true)
 	{
-		forwardKey = m_keyRight;
-		backKey = m_keyLeft;
+		forwardName = m_prefix + "right";
+		backName = m_prefix + "left";
 		dir = 1.0f;
 	}
 	else
 	{
-		forwardKey = m_keyLeft;
-		backKey = m_keyRight;
+		forwardName = m_prefix + "left";
+		backName = m_prefix + "right";
 		dir = -1.0f;
 	}
+
+	// 入力を最初にまとめて調べる(キーボードもパッドも Input がまとめてくれる)
+	bool forwardPressed = input.IsPressed(forwardName);
+	bool backPressed = input.IsPressed(backName);
+	bool upPressed = input.IsPressed(m_prefix + "up");
+	bool downPressed = input.IsPressed(m_prefix + "down");
+	bool weakTriggered = input.IsTriggered(m_prefix + "weak");     // 押した瞬間
+	bool strongTriggered = input.IsTriggered(m_prefix + "strong"); // 押した瞬間
 
 	// 攻撃のフレームを進める 
 	if (m_isAttacking == true)
@@ -66,11 +75,9 @@ void Fighter1::Update()
 	}
 
 	// 攻撃を始める(キーを押した瞬間)
-	int nowAttackKey = CheckHitKey(m_keyAttack);
-	int nowStrongKey = CheckHitKey(m_keyStrong);
 
 	// 弱攻撃
-	if (nowAttackKey == 1 && m_prevAttackKey == 0 && m_isAttacking == false && m_air == false && m_isCrouching == false)
+	if (weakTriggered && m_isAttacking == false && m_air == false && m_isCrouching == false)
 	{
 		m_isAttacking = true;
 		m_isStrongAttack = false;
@@ -87,7 +94,7 @@ void Fighter1::Update()
 		m_attackOffsetY = 20.0f;  // 体の上から20px下
 	}
 	// 強攻撃
-	else if (nowStrongKey == 1 && m_prevStrongKey == 0 && m_isAttacking == false && m_air == false && m_isCrouching == false)
+	else if (strongTriggered && m_isAttacking == false && m_air == false && m_isCrouching == false)
 	{
 		m_isAttacking = true;
 		m_isStrongAttack = true;
@@ -104,7 +111,7 @@ void Fighter1::Update()
 		m_attackOffsetY = 15.0f;  // 体の上から15px下
 	}
 	// しゃがみ弱
-	else if (nowAttackKey == 1 && m_prevAttackKey == 0 && m_isAttacking == false && m_air == false && m_isCrouching == true)
+	else if (weakTriggered && m_isAttacking == false && m_air == false && m_isCrouching == true)
 	{
 		m_isAttacking = true;
 		m_isStrongAttack = false;
@@ -121,7 +128,7 @@ void Fighter1::Update()
 		m_attackOffsetY = 20.0f; 
 	}
 	// 空中弱
-	else if (nowAttackKey == 1 && m_prevAttackKey == 0 && m_isAttacking == false && m_air == true)
+	else if (weakTriggered && m_isAttacking == false && m_air == true)
 	{
 		m_isAttacking = true;
 		m_isStrongAttack = false;
@@ -137,13 +144,11 @@ void Fighter1::Update()
 		m_attackH = 20.0f;
 		m_attackOffsetY = 45.0f;
 	}
-	m_prevAttackKey = nowAttackKey;
-	m_prevStrongKey = nowStrongKey;
 
 	// しゃがみ
 	if (m_air == false && m_isAttacking == false)
 	{
-		if (CheckHitKey(m_keyDown))
+		if (downPressed)
 		{
 			m_isCrouching = true;
 			m_height = kCrouchHeight;
@@ -159,29 +164,29 @@ void Fighter1::Update()
 	// 地上にいるときの移動(攻撃中は動けない) 
 	if (m_air == false && m_isAttacking == false && m_isCrouching == false)
 	{
-		if (CheckHitKey(forwardKey))
+		if (forwardPressed)
 		{
 			m_x += dir * m_ForwardSpeed;
 		}
-		else if (CheckHitKey(backKey))
+		else if (backPressed)
 		{
 			m_x -= dir * m_BackSpeed;
 		}
 	}
 
 	// ジャンプ(上キーを押した瞬間) 
-	if (CheckHitKey(m_keyUp) && m_air == false && m_isAttacking == false)
+	if (upPressed && m_air == false && m_isAttacking == false)
 	{
 		m_air = true;
 		m_vy = m_Jump;
 		m_height = kCrouchHeight;
 
-		if (CheckHitKey(forwardKey))
+		if (forwardPressed)
 		{
 			// 上 + 前 = 前ジャンプ
 			m_jumpDir = 1;
 		}
-		else if (CheckHitKey(backKey))
+		else if (backPressed)
 		{
 			// 上 + 後ろ = 後ろジャンプ
 			m_jumpDir = -1;

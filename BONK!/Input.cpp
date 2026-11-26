@@ -37,6 +37,10 @@ Input::Input()
 		{ PeripheralType::pad,   PAD_INPUT_UP },
 		{ PeripheralType::pad,   PAD_INPUT_A },
 	};
+	m_table["p1_down"] = {
+		{ PeripheralType::keybd, KEY_INPUT_S },
+		{ PeripheralType::pad,   PAD_INPUT_DOWN },
+	};
 	m_table["p1_weak"] = {
 		{ PeripheralType::keybd, KEY_INPUT_J },
 		{ PeripheralType::pad,   PAD_INPUT_C },     // Xボタン
@@ -59,6 +63,10 @@ Input::Input()
 		{ PeripheralType::keybd, KEY_INPUT_UP },
 		{ PeripheralType::pad2,  PAD_INPUT_UP },
 		{ PeripheralType::pad2,  PAD_INPUT_A },
+	};
+	m_table["p2_down"] = {
+		{ PeripheralType::keybd, KEY_INPUT_DOWN },
+		{ PeripheralType::pad2,  PAD_INPUT_DOWN },
 	};
 	m_table["p2_weak"] = {
 		{ PeripheralType::keybd, KEY_INPUT_COMMA },
