@@ -70,7 +70,7 @@ void Fighter1::Update()
 	int nowStrongKey = CheckHitKey(m_keyStrong);
 
 	// 弱攻撃
-	if (nowAttackKey == 1 && m_prevAttackKey == 0 && m_isAttacking == false && m_air == false)
+	if (nowAttackKey == 1 && m_prevAttackKey == 0 && m_isAttacking == false && m_air == false && m_isCrouching == false)
 	{
 		m_isAttacking = true;
 		m_isStrongAttack = false;
@@ -82,12 +82,12 @@ void Fighter1::Update()
 		m_attackActiveEnd = 8;    // 8フレーム目の手前まで(3フレーム)
 		m_attackTotal = 20;       // 20フレームで終わる
 		m_attackDamage = 5;       // ダメージ
-		m_attackW = 40.0f;        // 判定の幅
-		m_attackH = 30.0f;        // 判定の高さ
+		m_attackW = 35.0f;        // 判定の幅
+		m_attackH = 25.0f;        // 判定の高さ
 		m_attackOffsetY = 20.0f;  // 体の上から20px下
 	}
 	// 強攻撃
-	else if (nowStrongKey == 1 && m_prevStrongKey == 0 && m_isAttacking == false && m_air == false)
+	else if (nowStrongKey == 1 && m_prevStrongKey == 0 && m_isAttacking == false && m_air == false && m_isCrouching == false)
 	{
 		m_isAttacking = true;
 		m_isStrongAttack = true;
@@ -102,6 +102,23 @@ void Fighter1::Update()
 		m_attackW = 60.0f;        // 判定の幅(長い)
 		m_attackH = 40.0f;        // 判定の高さ
 		m_attackOffsetY = 15.0f;  // 体の上から15px下
+	}
+	// しゃがみ弱
+	else if (nowAttackKey == 1 && m_prevAttackKey == 0 && m_isAttacking == false && m_air == false && m_isCrouching == true)
+	{
+		m_isAttacking = true;
+		m_isStrongAttack = false;
+		m_attackFrame = 0;
+		m_attackHit = false;
+
+		// 弱攻撃
+		m_attackActiveStart = 4;  
+		m_attackActiveEnd = 7;    
+		m_attackTotal = 19;       
+		m_attackDamage = 4;       
+		m_attackW = 30.0f;        
+		m_attackH = 20.0f;        
+		m_attackOffsetY = 20.0f; 
 	}
 	// 空中弱
 	else if (nowAttackKey == 1 && m_prevAttackKey == 0 && m_isAttacking == false && m_air == true)
@@ -118,7 +135,7 @@ void Fighter1::Update()
 		m_attackDamage = 7;
 		m_attackW = 30.0f;
 		m_attackH = 20.0f;
-		m_attackOffsetY = 70.0f;
+		m_attackOffsetY = 45.0f;
 	}
 	m_prevAttackKey = nowAttackKey;
 	m_prevStrongKey = nowStrongKey;
@@ -157,6 +174,7 @@ void Fighter1::Update()
 	{
 		m_air = true;
 		m_vy = m_Jump;
+		m_height = kCrouchHeight;
 
 		if (CheckHitKey(forwardKey))
 		{
