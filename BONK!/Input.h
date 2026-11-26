@@ -3,6 +3,19 @@
 #include <string>
 #include <vector>
 
+enum class PeripheralType
+{
+	keybd,	// キーボード
+	pad1,	// パッド1
+	pad2,	// パッド2
+};
+
+struct InputInfo
+{
+	PeripheralType type;  
+	int id;               
+};
+
 // キー入力を「名前」で調べられるようにするクラス
 // 例: input.IsTriggered("ok")  → Enterキーを押した瞬間
 class Input
