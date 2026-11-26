@@ -35,7 +35,6 @@ Input::Input()
 	m_table["p1_up"] = {
 		{ PeripheralType::keybd, KEY_INPUT_W },     // スペースにするならここを KEY_INPUT_SPACE に
 		{ PeripheralType::pad,   PAD_INPUT_UP },
-		{ PeripheralType::pad,   PAD_INPUT_A },
 	};
 	m_table["p1_weak"] = {
 		{ PeripheralType::keybd, KEY_INPUT_J },

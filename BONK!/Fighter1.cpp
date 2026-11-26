@@ -104,8 +104,8 @@ void Fighter1::Update(Input& input)
 		m_attackActiveEnd = 16;   // 16フレーム目の手前まで(4フレーム)
 		m_attackTotal = 40;       // 40フレームで終わる(硬直が長い)
 		m_attackDamage = 10;      // ダメージ
-		m_attackW = 60.0f;        // 判定の幅(長い)
-		m_attackH = 40.0f;        // 判定の高さ
+		m_attackW = 50.0f;        // 判定の幅(長い)
+		m_attackH = 30.0f;        // 判定の高さ
 		m_attackOffsetY = 15.0f;  // 体の上から15px下
 	}
 	// しゃがみ弱

@@ -56,11 +56,11 @@ void GameScene::Init()
 
 	// 1P: 左側に立つ。A/D 移動、W ジャンプ、J 弱攻撃、K 強攻撃
 	m_player1->SetPosition(200.0f, true);
-	m_player1->SetKeys(KEY_INPUT_D, KEY_INPUT_A, KEY_INPUT_W, KEY_INPUT_S, KEY_INPUT_J, KEY_INPUT_K);
+    m_player1->SetInputPrefix("p1_");
 
 	// 2P: 右側に立つ。←/→ 移動、↑ ジャンプ、, 弱攻撃、. 強攻撃
 	m_player2->SetPosition(1000.0f, false);
-	m_player2->SetKeys(KEY_INPUT_RIGHT, KEY_INPUT_LEFT, KEY_INPUT_UP,KEY_INPUT_DOWN, KEY_INPUT_COMMA, KEY_INPUT_PERIOD);
+    m_player2->SetInputPrefix("p2_");
 	m_player2->SetColor(GetColor(0, 128, 255));
 }
 
@@ -87,8 +87,8 @@ void GameScene::Update(Input& input)
         m_player1->FaceTo(m_player2->GetX());
         m_player2->FaceTo(m_player1->GetX());
 
-        m_player1->Update();
-        m_player2->Update();
+        m_player1->Update(input);
+        m_player2->Update(input);
 
         // 攻撃が当たったか調べる
         CheckAttackHit(*m_player1, *m_player2);
